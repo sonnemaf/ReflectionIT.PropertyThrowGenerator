@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿//using ConsoleApp1.Demo;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ConsoleApp1.Test;
 
@@ -10,14 +11,26 @@ partial class Outer {
         }
 
         [SetsRequiredMembers]
-        public Employee(string name, string city, decimal salary) {
+        public Employee(string name, string city, decimal salary, global::ConsoleApp1.Demo.Company employer) {
             Name = name;
             City = city;
             Salary = salary;
+            Employer = employer;
         }
 
         [ThrowIfNull]
         public required partial string Name { get; set; }
+
+        [ThrowIfNull]
+        public required partial Demo.Company Employer { get; set; }
+
+        //public required global::ConsoleApp1.Demo.Company Employer {
+        //    get;
+        //    set {
+        //        global::System.ArgumentNullException.ThrowIfNull(value);
+        //        field = value;
+        //    }
+        //}
 
         [ThrowIfNull]
         [ThrowIfGreaterThan("Eindhoven")]

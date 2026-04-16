@@ -88,9 +88,13 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
                     if (pi.Key is IPropertySymbol pis) {
 
                         var prop = pi.First();
+                        string typeName = pis.Type.ToDisplayString();
+                        if (typeName.Contains('.')) {
+                            typeName = $"global::{typeName}";
+                        }
 
                         builder.AddStatements(
-                            $"{prop.Modifiers} {pis.Type} {pis.Name} {{",
+                            $"{prop.Modifiers} {typeName} {pis.Name} {{",
                             $"    {prop.Get};",
                             $"    {prop.SetOrInit} {{");
 

@@ -1,4 +1,5 @@
 ﻿global using ReflectionIT.PropertyThrowGenerator.Attributes;
+using ConsoleApp1.Demo;
 using ConsoleApp1.Test;
 
 namespace ConsoleApp1; 
@@ -6,14 +7,15 @@ namespace ConsoleApp1;
 internal partial class Program {
 
     private static void Main() {
+        var rit = new Company { Name = "Reflection IT" };
 
-        var fons = new Outer.Employee("Fons", "Asten", 2000);
+        var fons = new Outer.Employee("Fons", "Asten", 2000, rit);
 
         fons.RaiseSalary(10);
 
         Console.WriteLine(fons);
 
-        var jim = new Outer.Employee { Name = "Jim", Salary = 4000 };
+        var jim = new Outer.Employee { Name = "Jim", Salary = 4000, Employer = rit };
 
         Console.WriteLine(jim);
 
@@ -23,7 +25,7 @@ internal partial class Program {
         try {
             //fons.Name = null!;
 
-            var _ = new Outer.Employee(null!, "Asten", 2000);
+            var _ = new Outer.Employee(null!, "Asten", 2000, rit);
 
 
         } catch (Exception ex) {
