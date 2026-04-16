@@ -33,9 +33,13 @@ partial class Employee {
     [ThrowIfGreaterThan("London")]
     public partial string City { get; set; } = string.Empty;
 
+    [ThrowIfGreaterThanOrEqual(16)]
+    public partial int Age { get; set; }
+
     [ThrowIfNegative]
-    [ThrowIfGreaterThan(5000)]
+    [ThrowIfGreaterThan("1234.56M")]
     public partial decimal Salary { get; set; }
+
 }
 ```
 
@@ -59,11 +63,18 @@ partial class Employee
             field = value;
         }
     }
+    public partial int Age {
+        get;
+        set {
+            global::System.ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(value, 16);
+            field = value;
+        }
+    }
     public partial decimal Salary {
         get;
         set {
+            global::System.ArgumentOutOfRangeException.ThrowIfGreaterThan(value, 1234.56M);
             global::System.ArgumentOutOfRangeException.ThrowIfNegative(value);
-            global::System.ArgumentOutOfRangeException.ThrowIfGreaterThan(value, 5000);
             field = value;
         }
     }

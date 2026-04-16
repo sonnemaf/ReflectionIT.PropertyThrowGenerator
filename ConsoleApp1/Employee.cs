@@ -22,7 +22,7 @@ internal partial class Employee {
     public partial string City { get; set; } = string.Empty;
 
     [ThrowIfNegative]
-    [ThrowIfGreaterThan(5000)]
+    [ThrowIfGreaterThan("5000.5M")]
     public partial decimal Salary { get; set; }
 
     public void RaiseSalary(decimal percentage) {

@@ -7,9 +7,117 @@ namespace ReflectionIT.PropertyThrowGenerator.Tests;
 public class TestThrowGenerators {
 
     [Fact]
+    public async Task GenerateThrowIfEqualForPartialProperties() {
+        var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
+            TestCode = $$"""
+                {{ATTRIBUTE_CODE_IN_TEST}}
+
+                namespace X {
+                    partial class Employee {
+                
+                        [ThrowIfEqual("abc")]
+                        public required partial string Name { get; init; }
+
+                        [ThrowIfEqual("10.5M")]
+                        protected partial decimal Salary { private set; get; }
+                    }
+                }
+                """,
+        };
+
+        // List of expected generated sources
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+            $$"""
+                {{HEADER_CODE}}
+                namespace X;
+                partial class Employee
+                {
+                    public required partial string Name {
+                        get;
+                        init {
+                            global::System.ArgumentOutOfRangeException.ThrowIfEqual(value, "abc");
+                            field = value;
+                        }
+                    }
+                    protected partial decimal Salary {
+                        get;
+                        private set {
+                            global::System.ArgumentOutOfRangeException.ThrowIfEqual(value, 10.5M);
+                            field = value;
+                        }
+                    }
+                }
+
+                """));
+
+        context.SolutionTransforms.Add((solution, projectId) => {
+            var project = solution.GetProject(projectId)!;
+            var parse = (CSharpParseOptions)project.ParseOptions!;
+            return solution.WithProjectParseOptions(projectId, parse.WithLanguageVersion(LanguageVersion.CSharp14));
+        });
+
+        await context.RunAsync();
+    }
+
+    [Fact]
+    public async Task GenerateThrowIfNotEqualForPartialProperties() {
+        var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
+            TestCode = $$"""
+                {{ATTRIBUTE_CODE_IN_TEST}}
+
+                namespace X {
+                    partial class Employee {
+                
+                        [ThrowIfNotEqual("abc")]
+                        public required partial string Name { get; init; }
+
+                        [ThrowIfNotEqual("10.5M")]
+                        protected partial decimal Salary { private set; get; }
+                    }
+                }
+                """,
+        };
+
+        // List of expected generated sources
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+            $$"""
+                {{HEADER_CODE}}
+                namespace X;
+                partial class Employee
+                {
+                    public required partial string Name {
+                        get;
+                        init {
+                            global::System.ArgumentOutOfRangeException.ThrowIfNotEqual(value, "abc");
+                            field = value;
+                        }
+                    }
+                    protected partial decimal Salary {
+                        get;
+                        private set {
+                            global::System.ArgumentOutOfRangeException.ThrowIfNotEqual(value, 10.5M);
+                            field = value;
+                        }
+                    }
+                }
+
+                """));
+
+        context.SolutionTransforms.Add((solution, projectId) => {
+            var project = solution.GetProject(projectId)!;
+            var parse = (CSharpParseOptions)project.ParseOptions!;
+            return solution.WithProjectParseOptions(projectId, parse.WithLanguageVersion(LanguageVersion.CSharp14));
+        });
+
+        await context.RunAsync();
+    }
+
+    [Fact]
     public async Task GenerateThrowIfNullForPartialProperties() {
         var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
             TestCode = $$"""
                 {{ATTRIBUTE_CODE_IN_TEST}}
 
@@ -28,7 +136,8 @@ public class TestThrowGenerators {
 
         // List of expected generated sources
         context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
-            """
+            $$"""
+                {{HEADER_CODE}}
                 namespace X;
                 partial class Employee
                 {
@@ -62,7 +171,7 @@ public class TestThrowGenerators {
     [Fact]
     public async Task GenerateThrowIfNegativeForPartialProperties() {
         var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
             TestCode = $$"""
                 {{ATTRIBUTE_CODE_IN_TEST}}
 
@@ -82,7 +191,8 @@ public class TestThrowGenerators {
 
         // List of expected generated sources
         context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
-            """
+            $$"""
+                {{HEADER_CODE}}
                 namespace X;
                 partial class Employee
                 {
@@ -114,9 +224,64 @@ public class TestThrowGenerators {
     }
 
     [Fact]
+    public async Task GenerateThrowIfNegativeOrZeroForPartialProperties() {
+        var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
+            TestCode = $$"""
+                {{ATTRIBUTE_CODE_IN_TEST}}
+
+                namespace X {
+
+                    partial class Employee {
+                
+                        [ThrowIfNegativeOrZero]
+                        public required partial decimal Salary { get; init; }
+
+                        [ThrowIfNegativeOrZero]
+                        protected partial int Age { get; set; }
+                    }
+                }
+                """,
+        };
+
+        // List of expected generated sources
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+            $$"""
+                {{HEADER_CODE}}
+                namespace X;
+                partial class Employee
+                {
+                    public required partial decimal Salary {
+                        get;
+                        init {
+                            global::System.ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+                            field = value;
+                        }
+                    }
+                    protected partial int Age {
+                        get;
+                        set {
+                            global::System.ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
+                            field = value;
+                        }
+                    }
+                }
+
+                """));
+
+        context.SolutionTransforms.Add((solution, projectId) => {
+            var project = solution.GetProject(projectId)!;
+            var parse = (CSharpParseOptions)project.ParseOptions!;
+            return solution.WithProjectParseOptions(projectId, parse.WithLanguageVersion(LanguageVersion.CSharp14));
+        });
+
+        await context.RunAsync();
+    }
+
+    [Fact]
     public async Task GenerateThrowIfGreaterThanForPartialProperties() {
         var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
             TestCode = $$"""
                 {{ATTRIBUTE_CODE_IN_TEST}}
 
@@ -134,7 +299,8 @@ public class TestThrowGenerators {
 
         // List of expected generated sources
         context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
-            """
+            $$"""
+                {{HEADER_CODE}}
                 namespace X;
                 partial class Employee
                 {
@@ -159,9 +325,202 @@ public class TestThrowGenerators {
     }
 
     [Fact]
+    public async Task GenerateThrowIfGreaterThanOrEqualForPartialProperties() {
+        var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
+            TestCode = $$"""
+                {{ATTRIBUTE_CODE_IN_TEST}}
+
+                namespace X {
+
+                    partial class Employee {
+                
+                        [ThrowIfGreaterThanOrEqual(1000)]
+                        public partial decimal Salary { get; set; }
+
+                    }
+                }
+                """,
+        };
+
+        // List of expected generated sources
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+            $$"""
+                {{HEADER_CODE}}
+                namespace X;
+                partial class Employee
+                {
+                    public partial decimal Salary {
+                        get;
+                        set {
+                            global::System.ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(value, 1000);
+                            field = value;
+                        }
+                    }
+                }
+
+                """));
+
+        context.SolutionTransforms.Add((solution, projectId) => {
+            var project = solution.GetProject(projectId)!;
+            var parse = (CSharpParseOptions)project.ParseOptions!;
+            return solution.WithProjectParseOptions(projectId, parse.WithLanguageVersion(LanguageVersion.CSharp14));
+        });
+
+        await context.RunAsync();
+    }
+
+    [Fact]
+    public async Task GenerateThrowIfLessThanForPartialProperties() {
+        var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
+            TestCode = $$"""
+                {{ATTRIBUTE_CODE_IN_TEST}}
+
+                namespace X {
+
+                    partial class Employee {
+                
+                        [ThrowIfLessThan(1000)]
+                        public partial decimal Salary { get; set; }
+
+                    }
+                }
+                """,
+        };
+
+        // List of expected generated sources
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+            $$"""
+                {{HEADER_CODE}}
+                namespace X;
+                partial class Employee
+                {
+                    public partial decimal Salary {
+                        get;
+                        set {
+                            global::System.ArgumentOutOfRangeException.ThrowIfLessThan(value, 1000);
+                            field = value;
+                        }
+                    }
+                }
+
+                """));
+
+        context.SolutionTransforms.Add((solution, projectId) => {
+            var project = solution.GetProject(projectId)!;
+            var parse = (CSharpParseOptions)project.ParseOptions!;
+            return solution.WithProjectParseOptions(projectId, parse.WithLanguageVersion(LanguageVersion.CSharp14));
+        });
+
+        await context.RunAsync();
+    }
+
+    [Fact]
+    public async Task GenerateThrowIfLessThanOrEqualForPartialProperties() {
+        var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
+            TestCode = $$"""
+                {{ATTRIBUTE_CODE_IN_TEST}}
+
+                namespace X {
+
+                    partial class Employee {
+                
+                        [ThrowIfLessThanOrEqual(1000)]
+                        public partial decimal Salary { get; set; }
+
+                    }
+                }
+                """,
+        };
+
+        // List of expected generated sources
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+            $$"""
+                {{HEADER_CODE}}
+                namespace X;
+                partial class Employee
+                {
+                    public partial decimal Salary {
+                        get;
+                        set {
+                            global::System.ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(value, 1000);
+                            field = value;
+                        }
+                    }
+                }
+
+                """));
+
+        context.SolutionTransforms.Add((solution, projectId) => {
+            var project = solution.GetProject(projectId)!;
+            var parse = (CSharpParseOptions)project.ParseOptions!;
+            return solution.WithProjectParseOptions(projectId, parse.WithLanguageVersion(LanguageVersion.CSharp14));
+        });
+
+        await context.RunAsync();
+    }
+
+    [Fact]
+    public async Task GenerateThrowIfZeroForPartialProperties() {
+        var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
+            TestCode = $$"""
+                {{ATTRIBUTE_CODE_IN_TEST}}
+
+                namespace X {
+
+                    partial class Employee {
+                
+                        [ThrowIfZero]
+                        public required partial decimal Salary { get; init; }
+
+                        [ThrowIfZero]
+                        protected partial int Age { get; set; }
+                    }
+                }
+                """,
+        };
+
+        // List of expected generated sources
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+            $$"""
+                {{HEADER_CODE}}
+                namespace X;
+                partial class Employee
+                {
+                    public required partial decimal Salary {
+                        get;
+                        init {
+                            global::System.ArgumentOutOfRangeException.ThrowIfZero(value);
+                            field = value;
+                        }
+                    }
+                    protected partial int Age {
+                        get;
+                        set {
+                            global::System.ArgumentOutOfRangeException.ThrowIfZero(value);
+                            field = value;
+                        }
+                    }
+                }
+
+                """));
+
+        context.SolutionTransforms.Add((solution, projectId) => {
+            var project = solution.GetProject(projectId)!;
+            var parse = (CSharpParseOptions)project.ParseOptions!;
+            return solution.WithProjectParseOptions(projectId, parse.WithLanguageVersion(LanguageVersion.CSharp14));
+        });
+
+        await context.RunAsync();
+    }
+
+    [Fact]
     public async Task GenerateMultiple() {
         var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
-            ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
             TestCode = $$"""
                 {{ATTRIBUTE_CODE_IN_TEST}}
 
@@ -180,15 +539,16 @@ public class TestThrowGenerators {
 
         // List of expected generated sources
         context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
-            """
+            $$"""
+                {{HEADER_CODE}}
                 namespace X;
                 partial class Employee
                 {
                     public partial decimal Salary {
                         get;
                         set {
-                            global::System.ArgumentOutOfRangeException.ThrowIfNegative(value);
                             global::System.ArgumentOutOfRangeException.ThrowIfGreaterThan(value, 1000);
+                            global::System.ArgumentOutOfRangeException.ThrowIfNegative(value);
                             field = value;
                         }
                     }
@@ -205,21 +565,70 @@ public class TestThrowGenerators {
         await context.RunAsync();
     }
 
+    public const string HEADER_CODE = """
+        //------------------------------------------------------------------------------
+        // <auto-generated>
+        //     This code was generated by the ReflectionIT.PropertyThrowGenerator source generator
+        //     Changes to this file may cause incorrect behavior and will be lost if
+        //     the code is regenerated.
+        // </auto-generated>
+        //------------------------------------------------------------------------------
+        #pragma warning disable
+        #nullable enable annotations
+
+        """;
+
 
     public const string ATTRIBUTE_CODE = """
             namespace ReflectionIT.PropertyThrowGenerator.Attributes {
             
                 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-                public class ThrowIfNullAttribute : Attribute { }
-
-                [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
-                public class ThrowIfNegativeAttribute : Attribute { }
+                public class ThrowIfEqualAttribute : Attribute { 
+                    public ThrowIfEqualAttribute(string value) {}
+                    public ThrowIfEqualAttribute(object value) {}
+                }
 
                 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
                 public class ThrowIfGreaterThanAttribute : Attribute { 
                     public ThrowIfGreaterThanAttribute(string value) {}
                     public ThrowIfGreaterThanAttribute(object value) {}
                 }
+
+                [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+                public class ThrowIfGreaterThanOrEqualAttribute : Attribute { 
+                    public ThrowIfGreaterThanOrEqualAttribute(string value) {}
+                    public ThrowIfGreaterThanOrEqualAttribute(object value) {}
+                }
+
+                [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+                public class ThrowIfLessThanAttribute : Attribute { 
+                    public ThrowIfLessThanAttribute(string value) {}
+                    public ThrowIfLessThanAttribute(object value) {}
+                }
+            
+                [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+                public class ThrowIfLessThanOrEqualAttribute : Attribute { 
+                    public ThrowIfLessThanOrEqualAttribute(string value) {}
+                    public ThrowIfLessThanOrEqualAttribute(object value) {}
+                }
+            
+                [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+                public class ThrowIfNegativeAttribute : Attribute { }
+            
+                [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+                public class ThrowIfNegativeOrZeroAttribute : Attribute { }
+            
+                [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+                public class ThrowIfNotEqualAttribute : Attribute { 
+                    public ThrowIfNotEqualAttribute(string value) {}
+                    public ThrowIfNotEqualAttribute(object value) {}
+                }
+
+                [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+                public class ThrowIfNullAttribute : Attribute { }
+            
+                [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+                public class ThrowIfZeroAttribute : Attribute { }
             }
             """;
 
