@@ -25,7 +25,7 @@ public sealed class CsFileBuilder : ICsFileBuilder {
     }
 
     public ICsFileBuilder AddNamespace(string? namespaceName, bool condition = true) {
-        if (condition is false || string.IsNullOrEmpty(namespaceName)) {
+        if (!condition || string.IsNullOrEmpty(namespaceName)) {
             return this;
         }
 
@@ -43,7 +43,7 @@ public sealed class CsFileBuilder : ICsFileBuilder {
     }
 
     public ICsFileBuilder AddFileScopedNamespace(INamespaceSymbol namespaceSymbol, bool condition = true) {
-        if (condition is false) {
+        if (!condition || namespaceSymbol.IsGlobalNamespace) {
             return this;
         }
 

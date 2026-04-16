@@ -177,13 +177,13 @@ public class TestThrowGenerators {
 
                 namespace X {
 
-                    partial class Employee {
+                    partial record struct Employee {
                 
                         [ThrowIfNegative]
                         public required partial decimal Salary { get; init; }
 
                         [ThrowIfNegative]
-                        protected partial int Age { get; set; }
+                        public partial int Age { get; set; }
                     }
                 }
                 """,
@@ -194,7 +194,7 @@ public class TestThrowGenerators {
             $$"""
                 {{HEADER_CODE}}
                 namespace X;
-                partial class Employee
+                partial record struct Employee
                 {
                     public required partial decimal Salary {
                         get;
@@ -203,7 +203,7 @@ public class TestThrowGenerators {
                             field = value;
                         }
                     }
-                    protected partial int Age {
+                    public partial int Age {
                         get;
                         set {
                             global::System.ArgumentOutOfRangeException.ThrowIfNegative(value);

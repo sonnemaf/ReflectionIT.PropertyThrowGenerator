@@ -146,7 +146,9 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
 
                 builder.EndPartialType(ct);
 
-                context.AddSource($"{typeGroup.Key}.cs", SourceText.From(builder.Build(), Encoding.UTF8));
+                var src = builder.Build();
+
+                context.AddSource($"{typeGroup.Key}.cs", SourceText.From(src, Encoding.UTF8));
             }
         }
     }
