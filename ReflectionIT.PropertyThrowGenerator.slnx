@@ -1,0 +1,10 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="ConsoleApp1/ConsoleApp1.csproj" />
+  <Project Path="ReflectionIT.PropertyThrowGenerator.Attributes/ReflectionIT.PropertyThrowGenerator.Attributes.csproj" Id="4ef20927-c0f8-482c-b1c2-a991535d4b84" />
+  <Project Path="ReflectionIT.PropertyThrowGenerator.Tests/ReflectionIT.PropertyThrowGenerator.Tests.csproj" />
+  <Project Path="ReflectionIT.PropertyThrowGenerator/ReflectionIT.PropertyThrowGenerator.csproj" />
+</Solution>

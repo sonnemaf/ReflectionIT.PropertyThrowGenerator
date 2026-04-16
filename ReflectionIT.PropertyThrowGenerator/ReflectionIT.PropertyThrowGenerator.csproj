@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
+		<LangVersion>14.0</LangVersion>
+		<IsRoslynComponent>true</IsRoslynComponent>
+		
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="$(TargetPath)" Pack="true" PackagePath="analyzers/dotnet/cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0" PrivateAssets="all" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" PrivateAssets="all" />
+	</ItemGroup>
+
+
+    <ItemGroup>
+        <None Include="Logo.png" Pack="true" PackagePath="\" />
+        <None Include="../../README.md" Pack="true" PackagePath="\" />
+        <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\ReflectionIT.ComparisonOperatorsGenerator.Attributes.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\ReflectionIT.ComparisonOperatorsGenerator.Attributes.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="false" />
+    </ItemGroup>
+    
+	<ItemGroup>
+	  <ProjectReference Include="..\ReflectionIT.PropertyThrowGenerator.Attributes\ReflectionIT.PropertyThrowGenerator.Attributes.csproj" />
+	</ItemGroup>
+
+</Project>
