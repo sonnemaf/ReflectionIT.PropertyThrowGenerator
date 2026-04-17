@@ -23,6 +23,8 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
         IncrementalValuesProvider<PropInfo> propertyThrowIfNotEqualSymbols = GetSymbolsForType(context, typeof(ThrowIfNotEqualAttribute));
         IncrementalValuesProvider<PropInfo> propertyThrowIfNullSymbols = GetSymbolsForType(context, typeof(ThrowIfNullAttribute));
         IncrementalValuesProvider<PropInfo> propertyThrowIfZeroSymbols = GetSymbolsForType(context, typeof(ThrowIfZeroAttribute));
+        IncrementalValuesProvider<PropInfo> propertyThrowIfNullOrEmptySymbols = GetSymbolsForType(context, typeof(ThrowIfNullOrEmptyAttribute));
+        IncrementalValuesProvider<PropInfo> propertyThrowIfNullOrWhiteSpaceSymbols = GetSymbolsForType(context, typeof(ThrowIfNullOrWhiteSpaceAttribute));
 
 
         var c0 = propertyThrowIfEqualSymbols.Collect();
@@ -35,8 +37,10 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
         var c7 = propertyThrowIfNotEqualSymbols.Collect();
         var c8 = propertyThrowIfNullSymbols.Collect();
         var c9 = propertyThrowIfZeroSymbols.Collect();
+        var c10 = propertyThrowIfNullOrEmptySymbols.Collect();
+        var c11 = propertyThrowIfNullOrWhiteSpaceSymbols.Collect();
 
-        var all = c0.Combine(c1).Combine(c2).Combine(c3).Combine(c4).Combine(c5).Combine(c6).Combine(c7).Combine(c8).Combine(c9);
+        var all = c0.Combine(c1).Combine(c2).Combine(c3).Combine(c4).Combine(c5).Combine(c6).Combine(c7).Combine(c8).Combine(c9).Combine(c10).Combine(c11);
 
         context.RegisterSourceOutput(all, GenerateSource);
 
@@ -52,8 +56,10 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
         }
     }
 
-    private void GenerateSource(SourceProductionContext context, (((((((((ImmutableArray<PropInfo> Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) tuple) {
-        var properties = tuple.Left.Left.Left.Left.Left.Left.Left.Left.Left.AddRange(
+    private void GenerateSource(SourceProductionContext context, (((((((((((ImmutableArray<PropInfo> Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) tuple) {
+        var properties = tuple.Left.Left.Left.Left.Left.Left.Left.Left.Left.Left.Left.AddRange(
+                         tuple.Left.Left.Left.Left.Left.Left.Left.Left.Left.Left.Right).AddRange(
+                         tuple.Left.Left.Left.Left.Left.Left.Left.Left.Left.Right).AddRange(
                          tuple.Left.Left.Left.Left.Left.Left.Left.Left.Right).AddRange(
                          tuple.Left.Left.Left.Left.Left.Left.Left.Right).AddRange(
                          tuple.Left.Left.Left.Left.Left.Left.Right).AddRange(
@@ -135,6 +141,12 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
                                     break;
                                 case nameof(ThrowIfLessThanOrEqualAttribute):
                                     builder.AddStatements($"        global::System.ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(value, {value});");
+                                    break;
+                                case nameof(ThrowIfNullOrEmptyAttribute):
+                                    builder.AddStatements($"        global::System.ArgumentException.ThrowIfNullOrEmpty(value);");
+                                    break;
+                                case nameof(ThrowIfNullOrWhiteSpaceAttribute):
+                                    builder.AddStatements($"        global::System.ArgumentException.ThrowIfNullOrWhiteSpace(value);");
                                     break;
                                 default:
                                     break;

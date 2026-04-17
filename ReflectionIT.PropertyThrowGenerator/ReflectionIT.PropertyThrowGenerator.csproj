@@ -7,12 +7,26 @@
 		<EnforceExtendedAnalyzerRules>true</EnforceExtendedAnalyzerRules>
 		<LangVersion>14.0</LangVersion>
 		<IsRoslynComponent>true</IsRoslynComponent>
-		
 		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<Company>Reflection IT</Company>
+		<PackageIcon>Logo.png</PackageIcon>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<RepositoryUrl>https://github.com/sonnemaf/ReflectionIT.PropertyThrowGenerator</RepositoryUrl>
+        <Version>0.1.1-beta1</Version>
+		<FileVersion>0.1.1.0</FileVersion>
+		<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Include="$(TargetPath)" Pack="true" PackagePath="analyzers/dotnet/cs" />
+		<None Include="..\LICENSE.txt">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
+		<None Include="..\README.md">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -20,17 +34,15 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" PrivateAssets="all" />
 	</ItemGroup>
 
-
     <ItemGroup>
-        <None Include="Logo.png" Pack="true" PackagePath="\" />
-        <None Include="../../README.md" Pack="true" PackagePath="\" />
+        <None Include="Logo.png" Pack="True" PackagePath="\" />
         <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\ReflectionIT.ComparisonOperatorsGenerator.Attributes.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
-        <None Include="$(OutputPath)\ReflectionIT.ComparisonOperatorsGenerator.Attributes.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="false" />
+        <None Include="$(OutputPath)\ReflectionIT.PropertyThrowGenerator.Attributes.dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
+        <None Include="$(OutputPath)\ReflectionIT.PropertyThrowGenerator.Attributes.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="false" />
     </ItemGroup>
     
 	<ItemGroup>
-	  <ProjectReference Include="..\ReflectionIT.PropertyThrowGenerator.Attributes\ReflectionIT.PropertyThrowGenerator.Attributes.csproj" />
+	  <ProjectReference Include="..\ReflectionIT.PropertyThrowGenerator.Attributes\ReflectionIT.PropertyThrowGenerator.Attributes.csproj" PrivateAssets="all" />
 	</ItemGroup>
 
 </Project>

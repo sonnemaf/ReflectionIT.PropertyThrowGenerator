@@ -8,7 +8,7 @@ internal partial class Program {
 
     private static void Main() {
         var rit = new Company { Name = "Reflection IT" };
-
+        
         var fons = new Outer.Employee("Fons", "Asten", 2000, rit);
 
         fons.RaiseSalary(10);

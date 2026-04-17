@@ -1,7 +1,7 @@
 # ReflectionIT.PropertyThrowGenerator
 
 A source generator package that creates partial properties annotated with `[ThrowIf...]` attributes.
-The generated property setters throw `Argument...` exceptions when an invalid value is assigned.
+The generated property setters throw an `Argument...Exception` when an invalid value is set.
 
 # NuGet package
 
@@ -81,3 +81,21 @@ partial class Employee
 }
 ```
 
+## Attributes
+
+- ThrowIfEqualAttribute
+- ThrowIfGreaterThanAttribute
+- ThrowIfGreaterThanOrEqualAttribute
+- ThrowIfLessThanAttribute
+- ThrowIfLessThanOrEqualAttribute
+- ThrowIfNegativeAttribute
+- ThrowIfNegativeOrZeroAttribute
+- ThrowIfNotEqualAttribute
+- ThrowIfNullAttribute
+- ThrowIfNullOrEmptyAttribute
+- ThrowIfNullOrWhiteSpaceAttribute
+- ThrowIfZeroAttribute
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE.txt) file for details.

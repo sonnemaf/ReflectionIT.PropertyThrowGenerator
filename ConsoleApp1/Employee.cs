@@ -18,7 +18,7 @@ partial class Outer {
             Employer = employer;
         }
 
-        [ThrowIfNull]
+        [ThrowIfNullOrWhiteSpace]
         public required partial string Name { get; set; }
 
         [ThrowIfNull]

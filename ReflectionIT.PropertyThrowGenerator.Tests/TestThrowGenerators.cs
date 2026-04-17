@@ -169,6 +169,114 @@ public class TestThrowGenerators {
     }
 
     [Fact]
+    public async Task GenerateThrowIfNullOrEmptyForPartialProperties() {
+        var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
+            TestCode = $$"""
+                {{ATTRIBUTE_CODE_IN_TEST}}
+
+                namespace X {
+                    partial class Employee {
+                
+                        [ThrowIfNullOrEmpty]
+                        public required partial string Name { get; init; }
+
+                        [ThrowIfNullOrEmpty]
+                        protected partial string City { private set; get; }
+                    }
+                }
+                """,
+        };
+
+        // List of expected generated sources
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+            $$"""
+                {{HEADER_CODE}}
+                namespace X;
+                partial class Employee
+                {
+                    public required partial string Name {
+                        get;
+                        init {
+                            global::System.ArgumentException.ThrowIfNullOrEmpty(value);
+                            field = value;
+                        }
+                    }
+                    protected partial string City {
+                        get;
+                        private set {
+                            global::System.ArgumentException.ThrowIfNullOrEmpty(value);
+                            field = value;
+                        }
+                    }
+                }
+
+                """));
+
+        context.SolutionTransforms.Add((solution, projectId) => {
+            var project = solution.GetProject(projectId)!;
+            var parse = (CSharpParseOptions)project.ParseOptions!;
+            return solution.WithProjectParseOptions(projectId, parse.WithLanguageVersion(LanguageVersion.CSharp14));
+        });
+
+        await context.RunAsync();
+    }
+
+    [Fact]
+    public async Task GenerateThrowIfNullOrWhiteSpaceForPartialProperties() {
+        var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
+            TestCode = $$"""
+                {{ATTRIBUTE_CODE_IN_TEST}}
+
+                namespace X {
+                    partial class Employee {
+                
+                        [ThrowIfNullOrWhiteSpace]
+                        public required partial string Name { get; init; }
+
+                        [ThrowIfNullOrWhiteSpace]
+                        protected partial string City { private set; get; }
+                    }
+                }
+                """,
+        };
+
+        // List of expected generated sources
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+            $$"""
+                {{HEADER_CODE}}
+                namespace X;
+                partial class Employee
+                {
+                    public required partial string Name {
+                        get;
+                        init {
+                            global::System.ArgumentException.ThrowIfNullOrWhiteSpace(value);
+                            field = value;
+                        }
+                    }
+                    protected partial string City {
+                        get;
+                        private set {
+                            global::System.ArgumentException.ThrowIfNullOrWhiteSpace(value);
+                            field = value;
+                        }
+                    }
+                }
+
+                """));
+
+        context.SolutionTransforms.Add((solution, projectId) => {
+            var project = solution.GetProject(projectId)!;
+            var parse = (CSharpParseOptions)project.ParseOptions!;
+            return solution.WithProjectParseOptions(projectId, parse.WithLanguageVersion(LanguageVersion.CSharp14));
+        });
+
+        await context.RunAsync();
+    }
+
+    [Fact]
     public async Task GenerateThrowIfNegativeForPartialProperties() {
         var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
             ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
@@ -629,23 +737,13 @@ public class TestThrowGenerators {
             
                 [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
                 public class ThrowIfZeroAttribute : Attribute { }
+
+                [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+                public class ThrowIfNullOrEmptyAttribute : Attribute { }
+
+                [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
+                public class ThrowIfNullOrWhiteSpaceAttribute : Attribute { }
             }
-            """;
-
-    public const string ATTRIBUTE_CODE_CONDITIONAL = $$"""
-            //------------------------------------------------------------------------------
-            // <auto-generated>
-            //     This code was generated by the ReflectionIT.ComparisonOperatorsGenerator source generator
-            //
-            //     Changes to this file may cause incorrect behavior and will be lost if
-            //     the code is regenerated.
-            // </auto-generated>
-            //------------------------------------------------------------------------------
-
-            #nullable enable
-            #if COMPARISON_OPERATORS_GENERATOR_EMBED_ATTRIBUTES
-            {{ATTRIBUTE_CODE}}
-            #endif
             """;
 
     public const string ATTRIBUTE_CODE_IN_TEST = $$"""
