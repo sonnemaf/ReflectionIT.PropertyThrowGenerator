@@ -106,17 +106,12 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
 
                         foreach (var item in pi) {
 
-                            string value = item.Value;
-                            if (pis.Type.ToString() != "string") {
-                                value = value.Replace("\"", string.Empty);
-                            }
-
                             switch (item.AttributeType.Name) {
                                 case nameof(ThrowIfEqualAttribute):
-                                    builder.AddStatements($"        global::System.ArgumentOutOfRangeException.ThrowIfEqual(value, {value});");
+                                    builder.AddStatements($"        global::System.ArgumentOutOfRangeException.ThrowIfEqual(value, {item.Value});");
                                     break;
                                 case nameof(ThrowIfNotEqualAttribute):
-                                    builder.AddStatements($"        global::System.ArgumentOutOfRangeException.ThrowIfNotEqual(value, {value});");
+                                    builder.AddStatements($"        global::System.ArgumentOutOfRangeException.ThrowIfNotEqual(value, {item.Value});");
                                     break;
                                 case nameof(ThrowIfZeroAttribute):
                                     builder.AddStatements("        global::System.ArgumentOutOfRangeException.ThrowIfZero(value);");
@@ -131,16 +126,16 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
                                     builder.AddStatements("        global::System.ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);");
                                     break;
                                 case nameof(ThrowIfGreaterThanAttribute):
-                                    builder.AddStatements($"        global::System.ArgumentOutOfRangeException.ThrowIfGreaterThan(value, {value});");
+                                    builder.AddStatements($"        global::System.ArgumentOutOfRangeException.ThrowIfGreaterThan(value, {item.Value});");
                                     break;
                                 case nameof(ThrowIfGreaterThanOrEqualAttribute):
-                                    builder.AddStatements($"        global::System.ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(value, {value});");
+                                    builder.AddStatements($"        global::System.ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(value, {item.Value});");
                                     break;
                                 case nameof(ThrowIfLessThanAttribute):
-                                    builder.AddStatements($"        global::System.ArgumentOutOfRangeException.ThrowIfLessThan(value, {value});");
+                                    builder.AddStatements($"        global::System.ArgumentOutOfRangeException.ThrowIfLessThan(value, {item.Value});");
                                     break;
                                 case nameof(ThrowIfLessThanOrEqualAttribute):
-                                    builder.AddStatements($"        global::System.ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(value, {value});");
+                                    builder.AddStatements($"        global::System.ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(value, {item.Value});");
                                     break;
                                 case nameof(ThrowIfNullOrEmptyAttribute):
                                     builder.AddStatements($"        global::System.ArgumentException.ThrowIfNullOrEmpty(value);");

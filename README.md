@@ -36,14 +36,15 @@ partial class Employee {
     [ThrowIfGreaterThanOrEqual(16)]
     public partial int Age { get; set; }
 
+    // decimal type for attribute parameters are not support, use string instead
+    [ThrowIfGreaterThan("1234.56M")] 
     [ThrowIfNegative]
-    [ThrowIfGreaterThan("1234.56M")]
     public partial decimal Salary { get; set; }
 
 }
 ```
 
-This generates the following partial class with three partial properties that validate the assigned value in their setters.
+This generates the following partial class with four partial properties that validate the assigned value in their setters.
 
 ```cs
 partial class Employee
@@ -55,6 +56,7 @@ partial class Employee
             field = value;
         }
     }
+
     public partial string City {
         get;
         set {
@@ -63,6 +65,7 @@ partial class Employee
             field = value;
         }
     }
+
     public partial int Age {
         get;
         set {
@@ -70,6 +73,7 @@ partial class Employee
             field = value;
         }
     }
+
     public partial decimal Salary {
         get;
         set {

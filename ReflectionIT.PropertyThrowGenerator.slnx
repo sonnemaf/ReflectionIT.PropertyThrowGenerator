@@ -1,6 +1,7 @@
 <Solution>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
+    <File Path="directory.build.props" />
     <File Path="LICENSE.txt" />
     <File Path="README.md" />
   </Folder>

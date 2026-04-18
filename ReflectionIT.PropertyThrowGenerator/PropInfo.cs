@@ -33,5 +33,8 @@ internal class PropInfo {
              .First(a => a.AttributeClass?.ToDisplayString() == attributeType.FullName);
 
         Value = attribute.ConstructorArguments.FirstOrDefault().ToCSharpString();
+        if (PropertySymbol.Type.ToString() != "string" && Value.StartsWith("\"") && Value.EndsWith("\"")) {
+            Value = Value.Substring(1, Value.Length - 2);
+        }
     }
 }
