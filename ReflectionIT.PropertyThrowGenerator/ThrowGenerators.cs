@@ -159,7 +159,12 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
 
                 var src = builder.Build();
 
-                context.AddSource($"{typeGroup.Key}.cs", SourceText.From(src, Encoding.UTF8));
+                var filename = ct.ToDisplayString()
+                              .Replace('<', '{')
+                              .Replace('>', '}')
+                              .Replace(" ", string.Empty);
+
+                context.AddSource($"{filename}.g.cs", SourceText.From(src, Encoding.UTF8));
             }
         }
     }

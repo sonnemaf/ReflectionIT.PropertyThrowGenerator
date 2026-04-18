@@ -27,7 +27,7 @@ public class TestThrowGenerators {
         };
 
         // List of expected generated sources
-        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
             $$"""
                 {{HEADER_CODE}}
                 namespace X;
@@ -81,7 +81,7 @@ public class TestThrowGenerators {
         };
 
         // List of expected generated sources
-        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
             $$"""
                 {{HEADER_CODE}}
                 namespace X;
@@ -135,7 +135,7 @@ public class TestThrowGenerators {
         };
 
         // List of expected generated sources
-        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
             $$"""
                 {{HEADER_CODE}}
                 namespace X;
@@ -189,7 +189,7 @@ public class TestThrowGenerators {
         };
 
         // List of expected generated sources
-        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
             $$"""
                 {{HEADER_CODE}}
                 namespace X;
@@ -243,7 +243,7 @@ public class TestThrowGenerators {
         };
 
         // List of expected generated sources
-        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
             $$"""
                 {{HEADER_CODE}}
                 namespace X;
@@ -298,7 +298,7 @@ public class TestThrowGenerators {
         };
 
         // List of expected generated sources
-        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
             $$"""
                 {{HEADER_CODE}}
                 namespace X;
@@ -353,7 +353,7 @@ public class TestThrowGenerators {
         };
 
         // List of expected generated sources
-        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
             $$"""
                 {{HEADER_CODE}}
                 namespace X;
@@ -406,7 +406,7 @@ public class TestThrowGenerators {
         };
 
         // List of expected generated sources
-        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
             $$"""
                 {{HEADER_CODE}}
                 namespace X;
@@ -452,7 +452,7 @@ public class TestThrowGenerators {
         };
 
         // List of expected generated sources
-        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
             $$"""
                 {{HEADER_CODE}}
                 namespace X;
@@ -498,7 +498,7 @@ public class TestThrowGenerators {
         };
 
         // List of expected generated sources
-        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
             $$"""
                 {{HEADER_CODE}}
                 namespace X;
@@ -544,7 +544,7 @@ public class TestThrowGenerators {
         };
 
         // List of expected generated sources
-        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
             $$"""
                 {{HEADER_CODE}}
                 namespace X;
@@ -592,7 +592,7 @@ public class TestThrowGenerators {
         };
 
         // List of expected generated sources
-        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
             $$"""
                 {{HEADER_CODE}}
                 namespace X;
@@ -646,7 +646,7 @@ public class TestThrowGenerators {
         };
 
         // List of expected generated sources
-        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.cs",
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
             $$"""
                 {{HEADER_CODE}}
                 namespace X;

@@ -3,13 +3,13 @@
 A source generator package that creates partial properties annotated with `[ThrowIf...]` attributes.
 The generated property setters throw an `Argument...Exception` when an invalid value is set.
 
-# NuGet package
+## NuGet package
 
 | Package | Version |
 | ------ | ------ |
 | ReflectionIT.PropertyThrowGenerator | [![NuGet](https://img.shields.io/nuget/v/ReflectionIT.PropertyThrowGenerator)](https://www.nuget.org/packages/ReflectionIT.PropertyThrowGenerator/) |         
 
-##              
+## Requirements
 Your project must use `LangVersion` **C# 14.0** or higher because the generated code uses the new `field` keyword.
 
 It must also target **.NET 8.0** or higher because the generated code uses the `ArgumentOutOfRangeException` throw helper methods.
