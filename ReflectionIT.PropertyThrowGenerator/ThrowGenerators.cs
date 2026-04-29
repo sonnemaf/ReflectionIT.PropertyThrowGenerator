@@ -11,12 +11,22 @@ namespace ReflectionIT.PropertyThrowGenerator;
 [Generator]
 public sealed class ThrowGenerators : IIncrementalGenerator {
 
-    private const string MinimumLanguageVersionDiagnosticId = "PTG001";
+    internal const string MINIMUM_LANGUAGE_VERSION_DIAGNOSTIC_ID = "PTG001";
 
-    private static readonly DiagnosticDescriptor MinimumLanguageVersionDiagnostic = new(
-        id: MinimumLanguageVersionDiagnosticId,
+    internal const string PARTIAL_PROPERTY_DIAGNOSTIC_ID = "PTG002";
+
+    internal static DiagnosticDescriptor PartialPropertyRule { get; } = new(
+        id: PARTIAL_PROPERTY_DIAGNOSTIC_ID,
+        title: "ThrowIf attributes require partial properties",
+        messageFormat: "The property {0} must be partial to use the {1}",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
+
+    private static DiagnosticDescriptor MinimumLanguageVersionDiagnostic { get; } = new(
+        id: MINIMUM_LANGUAGE_VERSION_DIAGNOSTIC_ID,
         title: "C# language version is not supported",
-        messageFormat: "ReflectionIT.PropertyThrowGenerator requires C# language version 14.0 or higher.",
+        messageFormat: "ReflectionIT.PropertyThrowGenerator requires C# language version 14.0 or higher",
         category: "Usage",
         defaultSeverity: DiagnosticSeverity.Error,
         isEnabledByDefault: true);
@@ -109,7 +119,14 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
 
                     if (pi.Key is IPropertySymbol pis) {
 
+
                         var prop = pi.First();
+
+                        if (!prop.IsPartial) {
+                            context.ReportDiagnostic(Diagnostic.Create(PartialPropertyRule, prop.PropertyDeclarationSyntax.GetLocation(), pis.Name, prop.AttributeType.Name));
+                            continue;
+                        }
+
                         string typeName = pis.Type.ToDisplayString();
                         if (typeName.Contains('.')) {
                             typeName = $"global::{typeName}";
@@ -121,6 +138,8 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
                             $"    {prop.SetOrInit} {{");
 
                         foreach (var item in pi) {
+
+                            
 
                             switch (item.AttributeType.Name) {
                                 case nameof(ThrowIfEqualAttribute):
@@ -193,12 +212,7 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
     /// <returns>Whether <paramref name="node"/> is a valid property.</returns>
     internal static bool IsValidCandidateProperty(SyntaxNode node) {
         // The node must be a property declaration with two accessors
-        if (node is not PropertyDeclarationSyntax { AccessorList.Accessors: { Count: 2 } accessors, AttributeLists.Count: > 0 } property) {
-            return false;
-        }
-
-        // The property must be partial (we'll check that it's a declaration from its symbol)
-        if (!property.Modifiers.Any(SyntaxKind.PartialKeyword)) {
+        if (node is not PropertyDeclarationSyntax { AccessorList.Accessors: { Count: 2 } accessors, AttributeLists.Count: > 0 }) {
             return false;
         }
 

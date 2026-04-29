@@ -691,8 +691,8 @@ public class TestThrowGenerators {
                 """,
         };
 
-        context.ExpectedDiagnostics.Add(new DiagnosticResult("PTG001", DiagnosticSeverity.Error)
-            .WithMessage("ReflectionIT.PropertyThrowGenerator requires C# language version 14.0 or higher."));
+        context.ExpectedDiagnostics.Add(new DiagnosticResult(ThrowGenerators.MINIMUM_LANGUAGE_VERSION_DIAGNOSTIC_ID, DiagnosticSeverity.Error)
+            .WithMessage("ReflectionIT.PropertyThrowGenerator requires C# language version 14.0 or higher"));
         context.ExpectedDiagnostics.Add(new DiagnosticResult("CS9248", DiagnosticSeverity.Error)
             .WithSpan(66, 31, 66, 35)
             .WithArguments("X.Employee.Name"));
@@ -701,6 +701,47 @@ public class TestThrowGenerators {
             var project = solution.GetProject(projectId)!;
             var parse = (CSharpParseOptions)project.ParseOptions!;
             return solution.WithProjectParseOptions(projectId, parse.WithLanguageVersion(LanguageVersion.CSharp13));
+        });
+
+        await context.RunAsync();
+    }
+
+    [Fact]
+    public async Task ReportsDiagnosticWhenThrowIfAttributeIsUsedOnNonPartialProperty() {
+        var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net100,
+            TestCode = $$"""
+                {{ATTRIBUTE_CODE_IN_TEST}}
+
+                namespace X {
+                    partial class Employee {
+
+                        [ThrowIfNull]
+                        public string Name { get; set; } = string.Empty;
+                    }
+                }
+                """,
+        };
+
+        // List of expected generated sources
+        context.TestState.GeneratedSources.Add((typeof(ThrowGenerators), "X.Employee.g.cs",
+            $$"""
+                {{HEADER_CODE}}
+                namespace X;
+                partial class Employee
+                {
+                }
+
+                """));
+
+        context.ExpectedDiagnostics.Add(new DiagnosticResult(ThrowGenerators.PARTIAL_PROPERTY_DIAGNOSTIC_ID, DiagnosticSeverity.Error)
+            .WithMessage("The property Name must be partial to use the ThrowIfNullAttribute")
+            .WithSpan(65, 9, 66, 57).WithArguments("Name"));
+
+        context.SolutionTransforms.Add((solution, projectId) => {
+            var project = solution.GetProject(projectId)!;
+            var parse = (CSharpParseOptions)project.ParseOptions!;
+            return solution.WithProjectParseOptions(projectId, parse.WithLanguageVersion(LanguageVersion.CSharp14));
         });
 
         await context.RunAsync();
