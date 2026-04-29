@@ -16,6 +16,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<InternalsVisibleTo Include="ReflectionIT.PropertyThrowGenerator.Tests" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Include="$(TargetPath)" Pack="true" PackagePath="analyzers/dotnet/cs" />
 		<None Include="..\LICENSE.txt">
 		  <Pack>True</Pack>

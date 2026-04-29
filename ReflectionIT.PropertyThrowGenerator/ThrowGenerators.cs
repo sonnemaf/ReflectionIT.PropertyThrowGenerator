@@ -11,6 +11,16 @@ namespace ReflectionIT.PropertyThrowGenerator;
 [Generator]
 public sealed class ThrowGenerators : IIncrementalGenerator {
 
+    private const string MinimumLanguageVersionDiagnosticId = "PTG001";
+
+    private static readonly DiagnosticDescriptor MinimumLanguageVersionDiagnostic = new(
+        id: MinimumLanguageVersionDiagnosticId,
+        title: "C# language version is not supported",
+        messageFormat: "ReflectionIT.PropertyThrowGenerator requires C# language version 14.0 or higher.",
+        category: "Usage",
+        defaultSeverity: DiagnosticSeverity.Error,
+        isEnabledByDefault: true);
+
     public void Initialize(IncrementalGeneratorInitializationContext context) {
 
         IncrementalValuesProvider<PropInfo> propertyThrowIfEqualSymbols = GetSymbolsForType(context, typeof(ThrowIfEqualAttribute));
@@ -41,8 +51,9 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
         var c11 = propertyThrowIfNullOrWhiteSpaceSymbols.Collect();
 
         var all = c0.Combine(c1).Combine(c2).Combine(c3).Combine(c4).Combine(c5).Combine(c6).Combine(c7).Combine(c8).Combine(c9).Combine(c10).Combine(c11);
+        var compilationAndProperties = context.CompilationProvider.Combine(all);
 
-        context.RegisterSourceOutput(all, GenerateSource);
+        context.RegisterSourceOutput(compilationAndProperties, GenerateSource);
 
         static IncrementalValuesProvider<PropInfo> GetSymbolsForType(IncrementalGeneratorInitializationContext context, Type t) {
             return context.SyntaxProvider.ForAttributeWithMetadataName(
@@ -56,18 +67,23 @@ public sealed class ThrowGenerators : IIncrementalGenerator {
         }
     }
 
-    private void GenerateSource(SourceProductionContext context, (((((((((((ImmutableArray<PropInfo> Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) tuple) {
-        var properties = tuple.Left.Left.Left.Left.Left.Left.Left.Left.Left.Left.Left.AddRange(
-                         tuple.Left.Left.Left.Left.Left.Left.Left.Left.Left.Left.Right).AddRange(
-                         tuple.Left.Left.Left.Left.Left.Left.Left.Left.Left.Right).AddRange(
-                         tuple.Left.Left.Left.Left.Left.Left.Left.Left.Right).AddRange(
-                         tuple.Left.Left.Left.Left.Left.Left.Left.Right).AddRange(
-                         tuple.Left.Left.Left.Left.Left.Left.Right).AddRange(
-                         tuple.Left.Left.Left.Left.Left.Right).AddRange(
-                         tuple.Left.Left.Left.Left.Right).AddRange(
-                         tuple.Left.Left.Left.Right).AddRange(
-                         tuple.Left.Left.Right).AddRange(
-                         tuple.Left.Right).AddRange(tuple.Right);
+    private void GenerateSource(SourceProductionContext context, (Compilation Left, (((((((((((ImmutableArray<PropInfo> Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Left, ImmutableArray<PropInfo> Right) Right) tuple) {
+        if (tuple.Left is CSharpCompilation csharpCompilation && csharpCompilation.LanguageVersion < LanguageVersion.CSharp14) {
+            context.ReportDiagnostic(Diagnostic.Create(MinimumLanguageVersionDiagnostic, Location.None));
+            return;
+        }
+
+        var properties = tuple.Right.Left.Left.Left.Left.Left.Left.Left.Left.Left.Left.Left.AddRange(
+                         tuple.Right.Left.Left.Left.Left.Left.Left.Left.Left.Left.Left.Right).AddRange(
+                         tuple.Right.Left.Left.Left.Left.Left.Left.Left.Left.Left.Right).AddRange(
+                         tuple.Right.Left.Left.Left.Left.Left.Left.Left.Left.Right).AddRange(
+                         tuple.Right.Left.Left.Left.Left.Left.Left.Left.Right).AddRange(
+                         tuple.Right.Left.Left.Left.Left.Left.Left.Right).AddRange(
+                         tuple.Right.Left.Left.Left.Left.Left.Right).AddRange(
+                         tuple.Right.Left.Left.Left.Left.Right).AddRange(
+                         tuple.Right.Left.Left.Left.Right).AddRange(
+                         tuple.Right.Left.Left.Right).AddRange(
+                         tuple.Right.Left.Right).AddRange(tuple.Right.Right);
 
         if (properties.IsDefaultOrEmpty) {
             return;

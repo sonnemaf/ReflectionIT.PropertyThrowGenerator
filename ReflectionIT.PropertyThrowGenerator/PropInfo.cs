@@ -8,6 +8,7 @@ internal class PropInfo {
 
     public IPropertySymbol PropertySymbol { get; }
     public string Modifiers { get; }
+    public bool IsPartial { get; }
     public string Get { get; }
     public string SetOrInit { get; }
 
@@ -18,6 +19,7 @@ internal class PropInfo {
 
         PropertySymbol = propertySymbol;
         Modifiers = propertyDeclarationSyntax.Modifiers.ToString();
+        IsPartial = propertyDeclarationSyntax.Modifiers.Any(SyntaxKind.PartialKeyword);
 
         var (g, s) = propertyDeclarationSyntax.AccessorList?.Accessors[0].Kind() is SyntaxKind.GetAccessorDeclaration ? (0, 1) : (1, 0);
 

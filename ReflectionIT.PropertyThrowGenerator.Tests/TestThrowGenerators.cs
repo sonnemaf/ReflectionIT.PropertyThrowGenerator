@@ -1,4 +1,5 @@
-﻿using Microsoft.CodeAnalysis.CSharp;
+﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
 
@@ -668,6 +669,38 @@ public class TestThrowGenerators {
             var project = solution.GetProject(projectId)!;
             var parse = (CSharpParseOptions)project.ParseOptions!;
             return solution.WithProjectParseOptions(projectId, parse.WithLanguageVersion(LanguageVersion.CSharp14));
+        });
+
+        await context.RunAsync();
+    }
+
+    [Fact]
+    public async Task ReportsDiagnosticWhenLanguageVersionIsLowerThan14() {
+        var context = new CSharpSourceGeneratorTest<ThrowGenerators, DefaultVerifier> {
+            ReferenceAssemblies = ReferenceAssemblies.Net.Net90,
+            TestCode = $$"""
+                {{ATTRIBUTE_CODE_IN_TEST}}
+
+                namespace X {
+                    partial class Employee {
+
+                        [ThrowIfNull]
+                        public partial string Name { get; set; }
+                    }
+                }
+                """,
+        };
+
+        context.ExpectedDiagnostics.Add(new DiagnosticResult("PTG001", DiagnosticSeverity.Error)
+            .WithMessage("ReflectionIT.PropertyThrowGenerator requires C# language version 14.0 or higher."));
+        context.ExpectedDiagnostics.Add(new DiagnosticResult("CS9248", DiagnosticSeverity.Error)
+            .WithSpan(66, 31, 66, 35)
+            .WithArguments("X.Employee.Name"));
+
+        context.SolutionTransforms.Add((solution, projectId) => {
+            var project = solution.GetProject(projectId)!;
+            var parse = (CSharpParseOptions)project.ParseOptions!;
+            return solution.WithProjectParseOptions(projectId, parse.WithLanguageVersion(LanguageVersion.CSharp13));
         });
 
         await context.RunAsync();
