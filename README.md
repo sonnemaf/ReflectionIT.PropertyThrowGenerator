@@ -39,7 +39,7 @@ partial class Employee {
     [ThrowIfGreaterThan("London")]
     public partial string City { get; set; } = string.Empty;
 
-    [ThrowIfGreaterThanOrEqual(16)]
+    [ThrowIfLessThanOrEqual(17)]
     public partial int Age { get; set; }
 
     // Decimal attribute arguments are not supported directly, so use a string literal instead.
@@ -75,7 +75,7 @@ partial class Employee
     public partial int Age {
         get;
         set {
-            global::System.ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(value, 16);
+            global::System.ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(value, 17);
             field = value;
         }
     }
